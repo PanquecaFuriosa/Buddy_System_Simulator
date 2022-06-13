@@ -1,0 +1,392 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > BuddySystem</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">&lt;empty package name&gt;</a>
+</div>
+
+<h1>Coverage Summary for Class: BuddySystem (&lt;empty package name&gt;)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BuddySystem</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (75/75)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;import java.util.LinkedList
+<i class="no-highlight">2</i>&nbsp;import java.util.Scanner
+<i class="no-highlight">3</i>&nbsp;import kotlin.math.*
+<i class="no-highlight">4</i>&nbsp;/**
+<i class="no-highlight">5</i>&nbsp; * Implementación de una clase que representa a lo bloques de la memoria,
+<i class="no-highlight">6</i>&nbsp; * sigue la idea de los nodos de un árbol binario.
+<i class="no-highlight">7</i>&nbsp; * Autor: Gabriela Panqueva 06/2022.
+<i class="no-highlight">8</i>&nbsp; */
+<i class="no-highlight">9</i>&nbsp;class Bloque {
+<i class="no-highlight">10</i>&nbsp;    var proceso: String = &quot;&quot;
+<i class="no-highlight">11</i>&nbsp;    var padre: Bloque? = null
+<i class="no-highlight">12</i>&nbsp;    var hijoDer: Bloque? = null
+<i class="no-highlight">13</i>&nbsp;    var hijoIzq: Bloque? = null
+<i class="no-highlight">14</i>&nbsp;    var disp: Boolean = true
+<i class="no-highlight">15</i>&nbsp;    var ord: Int = 0
+<i class="no-highlight">16</i>&nbsp;
+<i class="no-highlight">17</i>&nbsp;    // Función que retorna true si el bloque está disponible y false si no.
+<i class="no-highlight">18</i>&nbsp;    fun estaDisponible(): Boolean = disp
+<i class="no-highlight">19</i>&nbsp;
+<i class="no-highlight">20</i>&nbsp;    // Función que retorna el orden del bloque.
+<i class="no-highlight">21</i>&nbsp;    fun orden(): Int = ord
+<i class="no-highlight">22</i>&nbsp;}
+<i class="no-highlight">23</i>&nbsp;
+<i class="no-highlight">24</i>&nbsp;/**
+<i class="no-highlight">25</i>&nbsp; * Clase que implementa el algoritmo de asignación de memoria Buddy System.
+<i class="no-highlight">26</i>&nbsp; * Argumentos:
+<i class="no-highlight">27</i>&nbsp; * n (Int): Es el orden máximo que puede tener un bloque, es decir, el bloque
+<i class="no-highlight">28</i>&nbsp; * más grande corresponda al tamaño 2^n.
+<i class="no-highlight">29</i>&nbsp; * Autor: Gabriela Panqueva 06/2022.
+<i class="no-highlight">30</i>&nbsp; */
+<b class="fc"><i class="no-highlight">31</i>&nbsp;class BuddySystem(n: Int) {</b>
+<i class="no-highlight">32</i>&nbsp;    private var orden : Int
+<i class="no-highlight">33</i>&nbsp;    private var memoria : Array&lt;LinkedList&lt;Bloque&gt;&gt;
+<b class="fc"><i class="no-highlight">34</i>&nbsp;    var procesosNombres : LinkedList&lt;String&gt; = LinkedList()</b>
+<b class="fc"><i class="no-highlight">35</i>&nbsp;    var procesosOrden : LinkedList&lt;Int&gt; = LinkedList()</b>
+<i class="no-highlight">36</i>&nbsp;
+<b class="fc"><i class="no-highlight">37</i>&nbsp;    init {</b>
+<b class="fc"><i class="no-highlight">38</i>&nbsp;        orden = n</b>
+<b class="fc"><i class="no-highlight">39</i>&nbsp;        memoria = Array&lt;LinkedList&lt;Bloque&gt;&gt;((orden + 1), {LinkedList&lt;Bloque&gt;()})</b>
+<b class="fc"><i class="no-highlight">40</i>&nbsp;        memoria[orden].add(Bloque())</b>
+<b class="fc"><i class="no-highlight">41</i>&nbsp;        memoria[orden].getFirst().ord = orden</b>
+<i class="no-highlight">42</i>&nbsp;
+<b class="fc"><i class="no-highlight">43</i>&nbsp;    }</b>
+<i class="no-highlight">44</i>&nbsp;
+<i class="no-highlight">45</i>&nbsp;    /**
+<i class="no-highlight">46</i>&nbsp;     * Función que busca un espacio para asginar de manera recursiva:
+<i class="no-highlight">47</i>&nbsp;     * si no consigue en un nivel dado, busca en el nivel superior.
+<i class="no-highlight">48</i>&nbsp;     * Argumentos:
+<i class="no-highlight">49</i>&nbsp;     * n (Int): Es el orden del bloque a buscar.
+<i class="no-highlight">50</i>&nbsp;     * Retorna:
+<i class="no-highlight">51</i>&nbsp;     * El bloque a asignar, si no hay retorna null.
+<i class="no-highlight">52</i>&nbsp;     * Autor: Gabriela Panqueva 06/2022.
+<i class="no-highlight">53</i>&nbsp;     */
+<i class="no-highlight">54</i>&nbsp;    private fun buscarEspacio(n: Int): Bloque? {
+<b class="fc"><i class="no-highlight">55</i>&nbsp;        var bloqueB : Bloque? = null</b>
+<i class="no-highlight">56</i>&nbsp;
+<b class="fc"><i class="no-highlight">57</i>&nbsp;        if (n &gt; orden) {</b>
+<b class="fc"><i class="no-highlight">58</i>&nbsp;            return null</b>
+<i class="no-highlight">59</i>&nbsp;        }
+<i class="no-highlight">60</i>&nbsp;
+<b class="fc"><i class="no-highlight">61</i>&nbsp;        for (i in memoria[n]) {</b>
+<b class="fc"><i class="no-highlight">62</i>&nbsp;            if (i.estaDisponible()) {</b>
+<b class="fc"><i class="no-highlight">63</i>&nbsp;                bloqueB = i</b>
+<b class="fc"><i class="no-highlight">64</i>&nbsp;                break</b>
+<i class="no-highlight">65</i>&nbsp;            }
+<i class="no-highlight">66</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">67</i>&nbsp;        if (bloqueB == null) {</b>
+<b class="fc"><i class="no-highlight">68</i>&nbsp;            bloqueB = buscarEspacio(n+1)</b>
+<i class="no-highlight">69</i>&nbsp;        }
+<i class="no-highlight">70</i>&nbsp;
+<b class="fc"><i class="no-highlight">71</i>&nbsp;        return bloqueB</b>
+<i class="no-highlight">72</i>&nbsp;    }
+<i class="no-highlight">73</i>&nbsp;
+<i class="no-highlight">74</i>&nbsp;    /**
+<i class="no-highlight">75</i>&nbsp;     * Función que divide bloques a la mitad desde un bloque dado hasta
+<i class="no-highlight">76</i>&nbsp;     * encontrar un bloque del orden deseado.
+<i class="no-highlight">77</i>&nbsp;     * Argumentos:
+<i class="no-highlight">78</i>&nbsp;     * bloque (Bloque): Bloque a dividir.
+<i class="no-highlight">79</i>&nbsp;     * n (Int): Orden deseado de los bloques resultantes.
+<i class="no-highlight">80</i>&nbsp;     * Retorna:
+<i class="no-highlight">81</i>&nbsp;     * Bloque con el orden deseado para asignar
+<i class="no-highlight">82</i>&nbsp;     * Autor: Gabriela Panqueva 06/2022.
+<i class="no-highlight">83</i>&nbsp;     */
+<i class="no-highlight">84</i>&nbsp;    private fun dividir(bloque: Bloque, n: Int) : Bloque {
+<b class="fc"><i class="no-highlight">85</i>&nbsp;        var bloqueA = bloque</b>
+<i class="no-highlight">86</i>&nbsp;
+<b class="fc"><i class="no-highlight">87</i>&nbsp;        if (bloqueA.orden() &gt; n) {</b>
+<b class="fc"><i class="no-highlight">88</i>&nbsp;            val hijoDer = Bloque()</b>
+<b class="fc"><i class="no-highlight">89</i>&nbsp;            val hijoIzq = Bloque()</b>
+<b class="fc"><i class="no-highlight">90</i>&nbsp;            hijoDer.padre = bloqueA</b>
+<b class="fc"><i class="no-highlight">91</i>&nbsp;            hijoIzq.padre = bloqueA</b>
+<b class="fc"><i class="no-highlight">92</i>&nbsp;            hijoDer.ord = bloqueA.orden()-1</b>
+<b class="fc"><i class="no-highlight">93</i>&nbsp;            hijoIzq.ord = bloqueA.orden()-1</b>
+<b class="fc"><i class="no-highlight">94</i>&nbsp;            bloqueA.hijoDer = hijoDer</b>
+<b class="fc"><i class="no-highlight">95</i>&nbsp;            bloqueA.hijoIzq = hijoIzq</b>
+<b class="fc"><i class="no-highlight">96</i>&nbsp;            bloqueA.disp = false</b>
+<b class="fc"><i class="no-highlight">97</i>&nbsp;            memoria[bloqueA.orden()-1].add(hijoDer)</b>
+<b class="fc"><i class="no-highlight">98</i>&nbsp;            memoria[bloqueA.orden()-1].add(hijoIzq)</b>
+<b class="fc"><i class="no-highlight">99</i>&nbsp;            bloqueA = dividir(hijoIzq, n)</b>
+<i class="no-highlight">100</i>&nbsp;        }
+<i class="no-highlight">101</i>&nbsp;
+<b class="fc"><i class="no-highlight">102</i>&nbsp;        return bloqueA</b>
+<i class="no-highlight">103</i>&nbsp;    }
+<i class="no-highlight">104</i>&nbsp;
+<i class="no-highlight">105</i>&nbsp;    /**
+<i class="no-highlight">106</i>&nbsp;     * Función que combina bloques para formar un bloque más grande hasta
+<i class="no-highlight">107</i>&nbsp;     * que no sea posible combinar más bloques.
+<i class="no-highlight">108</i>&nbsp;     * Argumentos:
+<i class="no-highlight">109</i>&nbsp;     * bloqueA (Bloque): Uno de los bloques a combinar.
+<i class="no-highlight">110</i>&nbsp;     * bloqueB (Bloque): El otro bloque a combinar.
+<i class="no-highlight">111</i>&nbsp;     * Autor: Gabriela Panqueva 06/2022.
+<i class="no-highlight">112</i>&nbsp;     */
+<i class="no-highlight">113</i>&nbsp;    private fun combinar(bloqueA: Bloque, bloqueB: Bloque) {
+<i class="no-highlight">114</i>&nbsp;
+<b class="fc"><i class="no-highlight">115</i>&nbsp;        if (bloqueA.estaDisponible() &amp;&amp; bloqueB.estaDisponible()) {</b>
+<b class="fc"><i class="no-highlight">116</i>&nbsp;            memoria[bloqueA.ord].remove(bloqueA)</b>
+<b class="fc"><i class="no-highlight">117</i>&nbsp;            memoria[bloqueA.ord].remove(bloqueB)</b>
+<b class="fc"><i class="no-highlight">118</i>&nbsp;            bloqueA.padre!!.disp = true</b>
+<b class="fc"><i class="no-highlight">119</i>&nbsp;            if (bloqueA.padre!!.padre == null) { return }</b>
+<b class="fc"><i class="no-highlight">120</i>&nbsp;            combinar(bloqueA.padre!!.padre!!.hijoDer!!, bloqueA.padre!!.padre!!.hijoIzq!!)</b>
+<i class="no-highlight">121</i>&nbsp;        }
+<i class="no-highlight">122</i>&nbsp;    }
+<i class="no-highlight">123</i>&nbsp;
+<i class="no-highlight">124</i>&nbsp;    /**
+<i class="no-highlight">125</i>&nbsp;     * Función que determina si se puede reservar un bloque del orden dado
+<i class="no-highlight">126</i>&nbsp;     * para un proceso con el nombre dado.
+<i class="no-highlight">127</i>&nbsp;     * Argumentos:
+<i class="no-highlight">128</i>&nbsp;     * nombre (String): Nombre del proceso que pide la reserva.
+<i class="no-highlight">129</i>&nbsp;     * n (Int): Orden del bloque que se debe reservar.
+<i class="no-highlight">130</i>&nbsp;     * Retorna:
+<i class="no-highlight">131</i>&nbsp;     * Booleano, true si se pudo hacer la reserva del espacio, false si no.
+<i class="no-highlight">132</i>&nbsp;     * Autor: Gabriela Panqueva 06/2022.
+<i class="no-highlight">133</i>&nbsp;     */
+<i class="no-highlight">134</i>&nbsp;    fun reservar(nombre: String, n: Int) : Boolean {
+<i class="no-highlight">135</i>&nbsp;        var bloqueA : Bloque?
+<b class="fc"><i class="no-highlight">136</i>&nbsp;        var i : Int = orden</b>
+<i class="no-highlight">137</i>&nbsp;
+<b class="fc"><i class="no-highlight">138</i>&nbsp;        while (i &gt; 0) {</b>
+<b class="fc"><i class="no-highlight">139</i>&nbsp;            if ((2.0.pow((i-1).toDouble())) &lt; n &amp;&amp; n &lt;= (2.0.pow(i.toDouble()))) {</b>
+<b class="fc"><i class="no-highlight">140</i>&nbsp;                break</b>
+<i class="no-highlight">141</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">142</i>&nbsp;            --i</b>
+<i class="no-highlight">143</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">144</i>&nbsp;        if (2.0.pow(i.toDouble()) &lt; n) { return false }</b>
+<i class="no-highlight">145</i>&nbsp;
+<b class="fc"><i class="no-highlight">146</i>&nbsp;        bloqueA = buscarEspacio(i)</b>
+<i class="no-highlight">147</i>&nbsp;
+<b class="fc"><i class="no-highlight">148</i>&nbsp;        if (bloqueA != null &amp;&amp; bloqueA.orden() &gt; i) {</b>
+<b class="fc"><i class="no-highlight">149</i>&nbsp;            bloqueA = dividir(bloqueA, i)</b>
+<b class="fc"><i class="no-highlight">150</i>&nbsp;        } else if (bloqueA == null) { return false }</b>
+<i class="no-highlight">151</i>&nbsp;
+<b class="fc"><i class="no-highlight">152</i>&nbsp;        bloqueA.proceso = nombre</b>
+<b class="fc"><i class="no-highlight">153</i>&nbsp;        bloqueA.disp = false</b>
+<b class="fc"><i class="no-highlight">154</i>&nbsp;        procesosNombres.add(nombre)</b>
+<b class="fc"><i class="no-highlight">155</i>&nbsp;        procesosOrden.add(i)</b>
+<i class="no-highlight">156</i>&nbsp;
+<b class="fc"><i class="no-highlight">157</i>&nbsp;        return true</b>
+<i class="no-highlight">158</i>&nbsp;    }
+<i class="no-highlight">159</i>&nbsp;
+<i class="no-highlight">160</i>&nbsp;    /**
+<i class="no-highlight">161</i>&nbsp;     * Función que se encarga de liberar el espacio reservado por un proceso dado.
+<i class="no-highlight">162</i>&nbsp;     * Argumentos:
+<i class="no-highlight">163</i>&nbsp;     * nombre (String): Nombre del proceso que solicita liberar el espacio reservado.
+<i class="no-highlight">164</i>&nbsp;     * Retorna:
+<i class="no-highlight">165</i>&nbsp;     * Booleano, true si se encontró el bloque reservado por el proceso dado. false si no.
+<i class="no-highlight">166</i>&nbsp;     * Autor: Gabriela Panqueva 06/2022.
+<i class="no-highlight">167</i>&nbsp;     */
+<i class="no-highlight">168</i>&nbsp;    fun liberar(nombre: String) : Boolean {
+<b class="fc"><i class="no-highlight">169</i>&nbsp;        val i : Int  = procesosNombres.indexOf(nombre)</b>
+<b class="fc"><i class="no-highlight">170</i>&nbsp;        var e = false</b>
+<b class="fc"><i class="no-highlight">171</i>&nbsp;        if (i != -1) {</b>
+<b class="fc"><i class="no-highlight">172</i>&nbsp;            e = true</b>
+<b class="fc"><i class="no-highlight">173</i>&nbsp;            val orden : Int = procesosOrden.get(i)</b>
+<b class="fc"><i class="no-highlight">174</i>&nbsp;            for (j in memoria[orden]) {</b>
+<b class="fc"><i class="no-highlight">175</i>&nbsp;                if (j.proceso == nombre) {</b>
+<b class="fc"><i class="no-highlight">176</i>&nbsp;                    j.proceso = &quot;&quot;</b>
+<b class="fc"><i class="no-highlight">177</i>&nbsp;                    j.disp = true</b>
+<b class="fc"><i class="no-highlight">178</i>&nbsp;                    if (j.padre != null) {</b>
+<b class="fc"><i class="no-highlight">179</i>&nbsp;                        combinar(j.padre!!.hijoDer!!, j.padre!!.hijoIzq!!)</b>
+<i class="no-highlight">180</i>&nbsp;                    }
+<i class="no-highlight">181</i>&nbsp;                }
+<i class="no-highlight">182</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">183</i>&nbsp;            procesosOrden.remove(procesosOrden.get(procesosNombres.indexOf(nombre)))</b>
+<b class="fc"><i class="no-highlight">184</i>&nbsp;            procesosNombres.remove(nombre)</b>
+<i class="no-highlight">185</i>&nbsp;        }
+<i class="no-highlight">186</i>&nbsp;
+<b class="fc"><i class="no-highlight">187</i>&nbsp;        return e</b>
+<i class="no-highlight">188</i>&nbsp;    }
+<i class="no-highlight">189</i>&nbsp;
+<i class="no-highlight">190</i>&nbsp;    /**
+<i class="no-highlight">191</i>&nbsp;     * Función que obtiene el número de bloque disponibles de un orden dado.
+<i class="no-highlight">192</i>&nbsp;     * Argumentos:
+<i class="no-highlight">193</i>&nbsp;     * n (Int): Orden de los bloques buscados.
+<i class="no-highlight">194</i>&nbsp;     * Retorna:
+<i class="no-highlight">195</i>&nbsp;     * Entero, el número de bloques disponibles del orden dado.
+<i class="no-highlight">196</i>&nbsp;     * Autor: Gabriela Panqueva 06/2022.
+<i class="no-highlight">197</i>&nbsp;     */
+<i class="no-highlight">198</i>&nbsp;    fun obtenerNumBloquesDisp(n: Int): Int {
+<b class="fc"><i class="no-highlight">199</i>&nbsp;        var num = 0</b>
+<i class="no-highlight">200</i>&nbsp;
+<b class="fc"><i class="no-highlight">201</i>&nbsp;        if (n &lt;= orden) {</b>
+<b class="fc"><i class="no-highlight">202</i>&nbsp;            for (i in memoria[n]) {</b>
+<b class="fc"><i class="no-highlight">203</i>&nbsp;                if (i.disp) {</b>
+<b class="fc"><i class="no-highlight">204</i>&nbsp;                    num++</b>
+<i class="no-highlight">205</i>&nbsp;                }
+<i class="no-highlight">206</i>&nbsp;            }
+<i class="no-highlight">207</i>&nbsp;        }
+<i class="no-highlight">208</i>&nbsp;
+<b class="fc"><i class="no-highlight">209</i>&nbsp;        return num</b>
+<i class="no-highlight">210</i>&nbsp;    }
+<i class="no-highlight">211</i>&nbsp;}
+<i class="no-highlight">212</i>&nbsp;
+<i class="no-highlight">213</i>&nbsp;/**
+<i class="no-highlight">214</i>&nbsp; * Función principal, le pide repetidamente al usuario una acción para ejecutar.
+<i class="no-highlight">215</i>&nbsp; */
+<i class="no-highlight">216</i>&nbsp;fun main(args: Array&lt;String&gt;) {
+<i class="no-highlight">217</i>&nbsp;    val particiones : LinkedList&lt;BuddySystem&gt; = LinkedList()
+<i class="no-highlight">218</i>&nbsp;    val lector = Scanner(System.`in`)
+<i class="no-highlight">219</i>&nbsp;    var linea : String
+<i class="no-highlight">220</i>&nbsp;    var palabras : List&lt;String&gt;
+<i class="no-highlight">221</i>&nbsp;    var j : Int = args[0].toInt()
+<i class="no-highlight">222</i>&nbsp;    val bin : String = j.toString(2)
+<i class="no-highlight">223</i>&nbsp;    j = 0
+<i class="no-highlight">224</i>&nbsp;
+<i class="no-highlight">225</i>&nbsp;    for (i in bin.length-1 downTo 0) {
+<i class="no-highlight">226</i>&nbsp;        if (bin[i] == &#39;1&#39;) {
+<i class="no-highlight">227</i>&nbsp;            particiones.add(BuddySystem(j))
+<i class="no-highlight">228</i>&nbsp;        }
+<i class="no-highlight">229</i>&nbsp;        j++
+<i class="no-highlight">230</i>&nbsp;    }
+<i class="no-highlight">231</i>&nbsp;
+<i class="no-highlight">232</i>&nbsp;    println(&quot;Bienvenido al simulador de reservador de memoria Buddy System :).&quot;)
+<i class="no-highlight">233</i>&nbsp;    println(&quot;Recuerde que las acciones permitidas son: RESERVAR, LIBERAR, MOSTRAR y SALIR.&quot;)
+<i class="no-highlight">234</i>&nbsp;
+<i class="no-highlight">235</i>&nbsp;    while (true) {
+<i class="no-highlight">236</i>&nbsp;        print(&quot;&gt;$&quot;)
+<i class="no-highlight">237</i>&nbsp;        linea = lector.nextLine()
+<i class="no-highlight">238</i>&nbsp;        palabras = linea.split(&quot; &quot;)
+<i class="no-highlight">239</i>&nbsp;
+<i class="no-highlight">240</i>&nbsp;        when (palabras[0]) {
+<i class="no-highlight">241</i>&nbsp;            &quot;RESERVAR&quot; -&gt; {
+<i class="no-highlight">242</i>&nbsp;                var resultado = false
+<i class="no-highlight">243</i>&nbsp;                for (i in particiones) {
+<i class="no-highlight">244</i>&nbsp;                    resultado = i.reservar(palabras[1], palabras[2].toInt())
+<i class="no-highlight">245</i>&nbsp;                    if (resultado) { break }
+<i class="no-highlight">246</i>&nbsp;                }
+<i class="no-highlight">247</i>&nbsp;                if (!(resultado)) {
+<i class="no-highlight">248</i>&nbsp;                    println(&quot;Hubo un error al reservar los bloques para el proceso, no hay suficientes bloques disponibles de manera contigua.&quot;)
+<i class="no-highlight">249</i>&nbsp;                }
+<i class="no-highlight">250</i>&nbsp;            }
+<i class="no-highlight">251</i>&nbsp;            &quot;LIBERAR&quot; -&gt; {
+<i class="no-highlight">252</i>&nbsp;                var resultado = false
+<i class="no-highlight">253</i>&nbsp;                for (i in particiones) {
+<i class="no-highlight">254</i>&nbsp;                    resultado = i.liberar(palabras[1])
+<i class="no-highlight">255</i>&nbsp;                    if (resultado) { break }
+<i class="no-highlight">256</i>&nbsp;                }
+<i class="no-highlight">257</i>&nbsp;                if (!(resultado)) {
+<i class="no-highlight">258</i>&nbsp;                    println(&quot;Hubo un error en la liberación del espacio reservado con el nombre especificado, el mismo no está asociado a ningún espacio.&quot;)
+<i class="no-highlight">259</i>&nbsp;                }
+<i class="no-highlight">260</i>&nbsp;            }
+<i class="no-highlight">261</i>&nbsp;            &quot;MOSTRAR&quot; -&gt; {
+<i class="no-highlight">262</i>&nbsp;                var texto = &quot;&quot;
+<i class="no-highlight">263</i>&nbsp;                var memDisp : Int
+<i class="no-highlight">264</i>&nbsp;                for (i in 0 until j) {
+<i class="no-highlight">265</i>&nbsp;                    var bloqDisp = 0
+<i class="no-highlight">266</i>&nbsp;                    memDisp = (2.0.pow(i)).toInt()
+<i class="no-highlight">267</i>&nbsp;                    for (k in particiones) {
+<i class="no-highlight">268</i>&nbsp;                        bloqDisp += k.obtenerNumBloquesDisp(i)
+<i class="no-highlight">269</i>&nbsp;                    }
+<i class="no-highlight">270</i>&nbsp;                    texto = &quot;${texto}\nBloques de tamaño $memDisp disponibles:\nUsted tiene $bloqDisp bloques disponibles.\n&quot;
+<i class="no-highlight">271</i>&nbsp;                }
+<i class="no-highlight">272</i>&nbsp;                texto = &quot;${texto}\n-------------------------------------------------------------------\n&quot;
+<i class="no-highlight">273</i>&nbsp;                texto = &quot;${texto}\nA continuación se le proporcionará una lista con los procesos que tiene bloques de memoria reservados.\n&quot;
+<i class="no-highlight">274</i>&nbsp;
+<i class="no-highlight">275</i>&nbsp;                for (k in particiones) {
+<i class="no-highlight">276</i>&nbsp;                    for (i in 0 until k.procesosNombres.size) {
+<i class="no-highlight">277</i>&nbsp;                        val espacio : Int = (2.0.pow(k.procesosOrden[i])).toInt()
+<i class="no-highlight">278</i>&nbsp;                        texto = &quot;${texto}Nombre: ${k.procesosNombres[i]}        Tamaño del bloque asignado: $espacio\n&quot;
+<i class="no-highlight">279</i>&nbsp;                    }
+<i class="no-highlight">280</i>&nbsp;                }
+<i class="no-highlight">281</i>&nbsp;                println(texto)
+<i class="no-highlight">282</i>&nbsp;            }
+<i class="no-highlight">283</i>&nbsp;            &quot;SALIR&quot; -&gt; break
+<i class="no-highlight">284</i>&nbsp;            else -&gt; println(&quot;Error, la acción intorucida es equivocada, por favor intente nuevamente.&quot;)
+<i class="no-highlight">285</i>&nbsp;        }
+<i class="no-highlight">286</i>&nbsp;    }
+<i class="no-highlight">287</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-06-13 04:18</div>
+</div>
+</body>
+</html>
