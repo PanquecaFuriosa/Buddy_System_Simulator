@@ -1,4 +1,4 @@
-# CI3641 Exman 1 - Problem 3
+# CI3641 Exam 1 - Problem 3
 Program that simulates the Buddy System memory location system.
 
 # Requirements:
