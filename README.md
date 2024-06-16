@@ -1,7 +1,27 @@
-# CI3641_Parcial1_Preg3
-Programa que simula el sistema de localización de memoria Buddy System
+# CI3641 Exman 1 - Problem 3
+Program that simulates the Buddy System memory location system.
 
-Profe disculpe que tardé en subir el unit test, ya para la hora de entrega tenía el código listo pero no había hecho unit test con kotlin y fue un desastre con el Intellij Idea
-:(.
-Por si acaso, el archivo con el coverage es el index.html y el los archivos principales están en las carpetas src.
-o que está por fuera, es decir el .kt, makefile y .sh es el código solo.
+# Requirements:
+1. Kotlin language previously installed.
+2. Linux operating system.
+   
+# How to Install
+Follow these steps to run the project:
+1. **Clone the repository**: Clone the repository using the following git command:
+```
+git clone https://github.com/PanquecaFuriosa/Buddy_System_Simulator
+```
+
+# How to Compile the project:
+1. Use the following bash command:
+```
+make
+```
+
+# How to Run:
+1. Use the following bash command:
+```
+./buddySystem.sh
+```
+
+Throughout the execution of the program, you will be prompted to enter the option number of the task you want to perform.
